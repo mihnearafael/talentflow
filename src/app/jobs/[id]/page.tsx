@@ -1,240 +1,174 @@
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import {
-    Building2,
-    MapPin,
-    Clock,
-    Share2,
-    Bookmark,
-    Wallet,
-    Briefcase,
-    GraduationCap,
-    LayoutGrid,
-    ChevronLeft,
-    ArrowRight,
-    CheckCircle2
-} from "lucide-react"
-import Link from "next/link"
+import { getJobById, getJobSkills } from "@/actions/jobs";
+import { applyForJob } from "@/actions/applications";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+import { ArrowLeft, Briefcase, MapPin, DollarSign, Clock, Building2, CheckCircle } from "lucide-react";
+import { notFound } from "next/navigation";
 
-export default function JobDetailsPage() {
+export default async function JobDetailPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
+    const job = await getJobById(id);
+    const skills = await getJobSkills(id);
+
+    if (!job) {
+        notFound();
+    }
+
     return (
-        <div className="min-h-screen bg-gray-50/50">
-            <header className="sticky top-0 z-30 flex h-16 items-center border-b bg-background px-6 shadow-sm">
-                <Link href="/jobs" className="flex items-center gap-2 font-bold text-xl text-primary">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                        TF
-                    </div>
-                    TalentFlow HR
-                </Link>
+        <div className="min-h-screen bg-background">
+            {/* Header */}
+            <header className="border-b bg-card">
+                <div className="container mx-auto flex h-16 items-center justify-between px-4">
+                    <Link href="/" className="flex items-center gap-2 font-bold text-xl text-primary">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground text-sm">
+                            TF
+                        </div>
+                        TalentFlow
+                    </Link>
+                    <nav className="flex items-center gap-4">
+                        <Link href="/jobs">
+                            <Button variant="ghost">Browse Jobs</Button>
+                        </Link>
+                        <Link href="/login">
+                            <Button>Log In</Button>
+                        </Link>
+                    </nav>
+                </div>
             </header>
 
-            <main className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-                <div className="mb-6">
-                    <Link href="/jobs" className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1">
-                        <ChevronLeft className="h-4 w-4" /> Back to Jobs
-                    </Link>
-                </div>
+            <main className="container mx-auto py-8 px-4">
+                {/* Back Link */}
+                <Link href="/jobs" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6">
+                    <ArrowLeft className="h-4 w-4" />
+                    Back to all jobs
+                </Link>
 
-                {/* Job Header */}
-                <div className="rounded-xl border bg-card p-6 shadow-sm mb-6">
-                    <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
-                        <div className="flex gap-4">
-                            <div className="h-16 w-16 overflow-hidden rounded-lg bg-indigo-600 flex items-center justify-center text-white text-2xl font-bold">
-                                TN
-                            </div>
-                            <div>
-                                <div className="text-sm font-medium text-indigo-600 mb-1">TechNova Solutions</div>
-                                <h1 className="text-3xl font-bold text-foreground mb-2">Senior Product Designer</h1>
-                                <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                                    <div className="flex items-center gap-1">
-                                        <MapPin className="h-4 w-4" />
-                                        San Francisco, CA (Remote)
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                        <Building2 className="h-4 w-4" />
-                                        Design Team
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                        <Clock className="h-4 w-4" />
-                                        Posted 2 days ago
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="flex gap-3">
-                            <Button variant="outline" size="icon">
-                                <Share2 className="h-4 w-4" />
-                            </Button>
-                            <Button variant="outline" size="icon">
-                                <Bookmark className="h-4 w-4" />
-                            </Button>
-                            <Button size="lg" className="w-full md:w-auto">Apply Now</Button>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="grid gap-6 lg:grid-cols-3">
+                <div className="grid gap-8 lg:grid-cols-3">
                     {/* Main Content */}
-                    <div className="lg:col-span-2 space-y-6">
+                    <div className="lg:col-span-2 space-y-8">
+                        {/* Job Header */}
+                        <div className="rounded-xl border bg-card p-8">
+                            <div className="flex flex-wrap gap-2 mb-4">
+                                <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20">
+                                    {job.department || 'General'}
+                                </Badge>
+                                <Badge variant="secondary">{job.type?.replace('_', ' ')}</Badge>
+                                <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">
+                                    Actively Hiring
+                                </Badge>
+                            </div>
 
-                        {/* Description */}
-                        <div className="rounded-xl border bg-card p-6 shadow-sm space-y-8">
-                            <section>
-                                <h3 className="text-lg font-bold border-l-4 border-primary pl-3 mb-4">About the Role</h3>
-                                <div className="space-y-4 text-muted-foreground leading-relaxed">
-                                    <p>We are looking for a Senior Product Designer to join our core experience team. You will be responsible for defining the user experience for our flagship product, working closely with product managers, engineers, and researchers to deliver high-quality design solutions.</p>
-                                    <p>At TechNova, we believe design is a strategic differentiator. As a Senior Designer, you will have the autonomy to drive design initiatives and mentor junior designers while shaping the future of our design system.</p>
+                            <h1 className="text-3xl font-bold mb-4">{job.title}</h1>
+
+                            <div className="flex flex-wrap gap-6 text-muted-foreground">
+                                <div className="flex items-center gap-2">
+                                    <Building2 className="h-5 w-5" />
+                                    <span>{job.company}</span>
                                 </div>
-                            </section>
-
-                            <section>
-                                <h3 className="text-lg font-bold border-l-4 border-primary pl-3 mb-4">Key Responsibilities</h3>
-                                <ul className="space-y-3">
-                                    {[
-                                        "Lead end-to-end design projects from discovery to developer handoff.",
-                                        "Conduct user research and usability testing to validate design decisions.",
-                                        "Contribute to and maintain our design system (Figma).",
-                                        "Collaborate with cross-functional teams to ensure design feasibility and quality."
-                                    ].map((item, i) => (
-                                        <li key={i} className="flex gap-3">
-                                            <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0" />
-                                            <span className="text-muted-foreground">{item}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </section>
-
-                            <section>
-                                <h3 className="text-lg font-bold border-l-4 border-primary pl-3 mb-4">Requirements</h3>
-                                <ul className="list-disc pl-5 space-y-2 text-muted-foreground">
-                                    <li>5+ years of experience in product design for web and mobile applications.</li>
-                                    <li>Strong portfolio demonstrating expertise in UX thinking and UI craft.</li>
-                                    <li>Proficiency in Figma, prototyping tools, and basic understanding of HTML/CSS.</li>
-                                    <li>Excellent communication skills and ability to articulate design rationale.</li>
-                                </ul>
-                            </section>
-
-                            <section>
-                                <h3 className="text-lg font-bold border-l-4 border-primary pl-3 mb-4">Required Skills</h3>
-                                <div className="flex flex-wrap gap-2">
-                                    {[
-                                        { name: "Figma", level: "Expert", color: "bg-blue-50 text-blue-700 border-blue-200" },
-                                        { name: "Prototyping", level: "Advanced", color: "bg-blue-50 text-blue-700 border-blue-200" },
-                                        { name: "User Research", level: "Advanced", color: "bg-blue-50 text-blue-700 border-blue-200" },
-                                        { name: "HTML/CSS", level: "Basic", color: "bg-gray-100 text-gray-700 border-gray-200" },
-                                        { name: "Design Systems", level: "Intermediate", color: "bg-gray-100 text-gray-700 border-gray-200" }
-                                    ].map((skill) => (
-                                        <div key={skill.name} className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm ${skill.color}`}>
-                                            <span className="font-semibold">{skill.name}</span>
-                                            <span className="opacity-60">• {skill.level}</span>
-                                        </div>
-                                    ))}
+                                <div className="flex items-center gap-2">
+                                    <MapPin className="h-5 w-5" />
+                                    <span>{job.location || 'Remote'}</span>
                                 </div>
-                            </section>
-                        </div>
-
-                        {/* Similar Jobs */}
-                        <div>
-                            <h3 className="mb-4 text-lg font-bold">Similar Jobs you might like</h3>
-                            <div className="grid gap-4 md:grid-cols-2">
-                                <div className="rounded-xl border bg-card p-5 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-                                    <div className="flex justify-between items-start mb-2">
-                                        <div>
-                                            <h4 className="font-bold">Senior UX Designer</h4>
-                                            <div className="text-sm text-muted-foreground">CreativePulse • Remote</div>
-                                        </div>
-                                        <Badge variant="secondary">Full-time</Badge>
+                                {(job.salaryMin || job.salaryMax) && (
+                                    <div className="flex items-center gap-2">
+                                        <DollarSign className="h-5 w-5" />
+                                        <span>
+                                            {job.salaryMin && job.salaryMax
+                                                ? `$${Number(job.salaryMin).toLocaleString()} - $${Number(job.salaryMax).toLocaleString()}`
+                                                : 'Competitive'}
+                                        </span>
                                     </div>
-                                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">Join our fast-paced team to design the next generation of marketing tools for creators.</p>
-                                    <div className="text-sm font-semibold">$115k - $140k/yr</div>
-                                </div>
-                                <div className="rounded-xl border bg-card p-5 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-                                    <div className="flex justify-between items-start mb-2">
-                                        <div>
-                                            <h4 className="font-bold">Product Designer II</h4>
-                                            <div className="text-sm text-muted-foreground">FinTech Co. • New York, NY</div>
-                                        </div>
-                                        <Badge variant="secondary">Hybrid</Badge>
-                                    </div>
-                                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">We are scaling our mobile banking app and need a designer with strong visual skills.</p>
-                                    <div className="text-sm font-semibold">$100k - $130k/yr</div>
+                                )}
+                                <div className="flex items-center gap-2">
+                                    <Clock className="h-5 w-5" />
+                                    <span>Posted {job.posted}</span>
                                 </div>
                             </div>
                         </div>
 
+                        {/* Job Description */}
+                        <div className="rounded-xl border bg-card p-8">
+                            <h2 className="text-xl font-bold mb-4">About This Role</h2>
+                            <div className="prose prose-gray max-w-none">
+                                <p className="text-muted-foreground whitespace-pre-wrap">
+                                    {job.description || 'No description provided.'}
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Required Skills */}
+                        {skills.length > 0 && (
+                            <div className="rounded-xl border bg-card p-8">
+                                <h2 className="text-xl font-bold mb-4">Required Skills</h2>
+                                <div className="flex flex-wrap gap-2">
+                                    {skills.map((skill) => (
+                                        <Badge key={skill.skillId} variant="secondary" className="px-3 py-1">
+                                            {skill.skillName}
+                                            {skill.requiredLevel && (
+                                                <span className="ml-2 text-xs opacity-60">Lvl {skill.requiredLevel}</span>
+                                            )}
+                                        </Badge>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* Sidebar */}
                     <div className="space-y-6">
-                        <div className="rounded-xl border bg-primary/5 p-6 border-primary/20">
-                            <div className="flex items-center justify-between mb-2">
-                                <h3 className="font-semibold text-primary">Skill Match</h3>
-                                <span className="font-bold text-primary">92%</span>
-                            </div>
-                            <div className="h-2 w-full rounded-full bg-primary/20 mb-3">
-                                <div className="h-full w-[92%] rounded-full bg-primary" />
-                            </div>
-                            <p className="text-xs text-muted-foreground">Excellent! You have <strong>4/5</strong> top skills required for this role.</p>
-                        </div>
-
-                        <div className="rounded-xl border bg-card p-6 shadow-sm space-y-6">
-                            <div className="flex items-start gap-4">
-                                <div className="rounded-lg bg-gray-100 p-2">
-                                    <Wallet className="h-5 w-5 text-gray-700" />
-                                </div>
-                                <div>
-                                    <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Salary Range</div>
-                                    <div className="font-bold">$120k - $150k<span className="text-muted-foreground font-normal text-sm">/year</span></div>
-                                </div>
-                            </div>
-                            <div className="flex items-start gap-4">
-                                <div className="rounded-lg bg-gray-100 p-2">
-                                    <Briefcase className="h-5 w-5 text-gray-700" />
-                                </div>
-                                <div>
-                                    <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Employment Type</div>
-                                    <div className="font-bold">Full-time</div>
-                                </div>
-                            </div>
-                            <div className="flex items-start gap-4">
-                                <div className="rounded-lg bg-gray-100 p-2">
-                                    <GraduationCap className="h-5 w-5 text-gray-700" />
-                                </div>
-                                <div>
-                                    <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Experience Level</div>
-                                    <div className="font-bold">Mid-Senior Level</div>
-                                </div>
-                            </div>
-                            <div className="flex items-start gap-4">
-                                <div className="rounded-lg bg-gray-100 p-2">
-                                    <LayoutGrid className="h-5 w-5 text-gray-700" />
-                                </div>
-                                <div>
-                                    <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Industry</div>
-                                    <div className="font-bold">SaaS / Technology</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="rounded-xl border bg-card p-6 shadow-sm">
-                            <h3 className="text-xs text-muted-foreground font-semibold uppercase tracking-wider mb-4">About the Company</h3>
-                            <div className="flex items-center gap-3 mb-4">
-                                <div className="h-10 w-10 overflow-hidden rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold">
-                                    TN
-                                </div>
-                                <div>
-                                    <div className="font-bold">TechNova Solutions</div>
-                                    <div className="text-xs text-muted-foreground">500-1000 employees</div>
-                                </div>
-                            </div>
-                            <p className="text-sm text-muted-foreground mb-4">TechNova is a leading provider of cloud-based solutions for enterprise resource planning. We help businesses streamline operations.</p>
-                            <Link href="#" className="text-sm font-semibold text-primary flex items-center gap-1 hover:underline">
-                                View Company Profile <ArrowRight className="h-4 w-4" />
+                        {/* Apply Card */}
+                        <div className="rounded-xl border bg-card p-6 sticky top-6">
+                            <h3 className="font-bold text-lg mb-4">Interested in this role?</h3>
+                            <Link href={`/jobs/${id}/apply`}>
+                                <Button className="w-full mb-4" size="lg">
+                                    Apply Now
+                                </Button>
                             </Link>
+                            <p className="text-xs text-muted-foreground text-center">
+                                By applying, you agree to our terms and privacy policy.
+                            </p>
+
+                            <div className="border-t mt-6 pt-6">
+                                <h4 className="font-medium mb-3">What to expect:</h4>
+                                <ul className="space-y-2 text-sm text-muted-foreground">
+                                    <li className="flex items-start gap-2">
+                                        <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
+                                        Application review within 48 hours
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
+                                        Initial screening call
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
+                                        Technical assessment
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
+                                        Final interview with team
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        {/* Company Card */}
+                        <div className="rounded-xl border bg-card p-6">
+                            <h3 className="font-bold text-lg mb-4">About the Company</h3>
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="h-12 w-12 rounded-lg bg-muted flex items-center justify-center font-bold text-muted-foreground">
+                                    {job.company?.[0] || 'C'}
+                                </div>
+                                <div>
+                                    <div className="font-medium">{job.company}</div>
+                                    <div className="text-sm text-muted-foreground">{job.location}</div>
+                                </div>
+                            </div>
+                            <Button variant="outline" className="w-full">View Company Profile</Button>
                         </div>
                     </div>
                 </div>
             </main>
         </div>
-    )
+    );
 }

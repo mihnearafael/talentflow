@@ -1,0 +1,149 @@
+import { getCompanies, getDepartments } from "@/actions/organizations";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+import { Building2, Users, MapPin, Plus, Settings, ArrowLeft } from "lucide-react";
+
+export default async function SettingsPage() {
+    const companies = await getCompanies();
+    const departments = await getDepartments();
+
+    return (
+        <div className="min-h-screen bg-background">
+            {/* Header */}
+            <header className="border-b bg-card">
+                <div className="container mx-auto flex h-16 items-center justify-between px-4">
+                    <Link href="/dashboard" className="flex items-center gap-2 font-bold text-xl text-primary">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground text-sm">
+                            TF
+                        </div>
+                        TalentFlow
+                    </Link>
+                    <nav className="flex items-center gap-4">
+                        <Link href="/dashboard">
+                            <Button variant="ghost">Dashboard</Button>
+                        </Link>
+                    </nav>
+                </div>
+            </header>
+
+            <main className="container mx-auto py-8 px-4">
+                <Link href="/dashboard" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6">
+                    <ArrowLeft className="h-4 w-4" />
+                    Back to dashboard
+                </Link>
+
+                <div className="flex items-center gap-3 mb-8">
+                    <Settings className="h-8 w-8 text-primary" />
+                    <div>
+                        <h1 className="text-3xl font-bold tracking-tight">Organization Settings</h1>
+                        <p className="text-muted-foreground">Manage your companies and departments.</p>
+                    </div>
+                </div>
+
+                <div className="grid gap-8 lg:grid-cols-2">
+                    {/* Companies */}
+                    <div className="rounded-xl border bg-card shadow-sm">
+                        <div className="p-6 flex items-center justify-between border-b">
+                            <div className="flex items-center gap-2">
+                                <Building2 className="h-5 w-5" />
+                                <h2 className="font-semibold">Companies</h2>
+                            </div>
+                            <Button size="sm">
+                                <Plus className="mr-2 h-4 w-4" />
+                                Add Company
+                            </Button>
+                        </div>
+                        <div className="p-6">
+                            {companies.length === 0 ? (
+                                <div className="text-center py-8">
+                                    <Building2 className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                                    <h3 className="font-semibold mb-2">No companies yet</h3>
+                                    <p className="text-muted-foreground text-sm mb-4">
+                                        Add your first company to get started.
+                                    </p>
+                                    <Button>
+                                        <Plus className="mr-2 h-4 w-4" />
+                                        Add Company
+                                    </Button>
+                                </div>
+                            ) : (
+                                <div className="space-y-4">
+                                    {companies.map((company) => (
+                                        <div key={company.id} className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
+                                            <div className="flex items-center gap-4">
+                                                <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center font-bold text-primary">
+                                                    {company.name[0]}
+                                                </div>
+                                                <div>
+                                                    <div className="font-medium">{company.name}</div>
+                                                    <div className="text-sm text-muted-foreground flex items-center gap-2">
+                                                        {company.industry && <span>{company.industry}</span>}
+                                                        {company.location && (
+                                                            <>
+                                                                <span>•</span>
+                                                                <MapPin className="h-3 w-3" />
+                                                                <span>{company.location}</span>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <Button variant="ghost" size="sm">Edit</Button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Departments */}
+                    <div className="rounded-xl border bg-card shadow-sm">
+                        <div className="p-6 flex items-center justify-between border-b">
+                            <div className="flex items-center gap-2">
+                                <Users className="h-5 w-5" />
+                                <h2 className="font-semibold">Departments</h2>
+                            </div>
+                            <Button size="sm">
+                                <Plus className="mr-2 h-4 w-4" />
+                                Add Department
+                            </Button>
+                        </div>
+                        <div className="p-6">
+                            {departments.length === 0 ? (
+                                <div className="text-center py-8">
+                                    <Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                                    <h3 className="font-semibold mb-2">No departments yet</h3>
+                                    <p className="text-muted-foreground text-sm mb-4">
+                                        Create departments to organize your teams.
+                                    </p>
+                                    <Button>
+                                        <Plus className="mr-2 h-4 w-4" />
+                                        Add Department
+                                    </Button>
+                                </div>
+                            ) : (
+                                <div className="space-y-4">
+                                    {departments.map((department) => (
+                                        <div key={department.id} className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
+                                            <div>
+                                                <div className="font-medium">{department.name}</div>
+                                                <div className="text-sm text-muted-foreground flex items-center gap-2">
+                                                    <Badge variant="outline">{department.company}</Badge>
+                                                    {department.floorLocation && (
+                                                        <span>Floor: {department.floorLocation}</span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <Button variant="ghost" size="sm">Edit</Button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    );
+}

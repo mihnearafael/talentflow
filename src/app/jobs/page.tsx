@@ -1,141 +1,129 @@
-"use client"
+import { getJobs } from "@/actions/jobs";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+import { Briefcase, MapPin, DollarSign, Clock, Search } from "lucide-react";
 
-import { useState } from "react"
-import { JobCard } from "@/components/job-card"
-import { Sidebar } from "@/components/sidebar"
-import { Button } from "@/components/ui/button"
-import { Search, Bell, Settings } from "lucide-react"
-import { CandidateHeader } from "@/components/candidate-header"
-
-export default function Home() {
-    const jobs = [
-        {
-            title: "Senior Product Designer",
-            company: "Dropbox",
-            department: "Design",
-            location: "San Francisco, CA",
-            type: "Full-time",
-            salary: "$140k - $180k",
-            tags: ["UI/UX", "Figma", "Prototyping"],
-            logoUrl: "https://upload.wikimedia.org/wikipedia/commons/7/78/Dropbox_Icon.svg",
-            highlight: true,
-            postedAt: "2 hours ago"
-        },
-        {
-            title: "Frontend Developer",
-            company: "Airbnb",
-            department: "Engineering",
-            location: "Remote",
-            type: "Contract",
-            salary: "$120k - $150k",
-            tags: ["React", "TypeScript", "Next.js"],
-            logoUrl: "https://upload.wikimedia.org/wikipedia/commons/6/69/Airbnb_Logo_B%C3%A9lo.svg",
-            postedAt: "5 hours ago"
-        },
-        {
-            title: "Backend Engineer",
-            company: "Stripe",
-            department: "Engineering",
-            location: "New York, NY",
-            type: "Full-time",
-            salary: "$160k - $210k",
-            tags: ["Go", "Distributed Systems", "API"],
-            logoUrl: "https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg",
-            postedAt: "1 day ago"
-        },
-        {
-            title: "Marketing Manager",
-            company: "Spotify",
-            department: "Marketing",
-            location: "London, UK",
-            type: "Full-time",
-            salary: "$90k - $120k",
-            tags: ["Digital Marketing", "Campaigns", "Data Analysis"],
-            logoUrl: "https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg",
-            postedAt: "2 days ago"
-        },
-        {
-            title: "Data Scientist",
-            company: "Netflix",
-            department: "Engineering",
-            location: "Los Gatos, CA",
-            type: "Full-time",
-            salary: "$180k - $250k",
-            tags: ["Python", "Machine Learning", "SQL"],
-            logoUrl: "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg",
-            postedAt: "3 days ago"
-        }
-    ]
-
-    const [selectedDepartments, setSelectedDepartments] = useState<string[]>([])
-    const [selectedJobTypes, setSelectedJobTypes] = useState<string[]>([])
-    const [selectedLocations, setSelectedLocations] = useState<string[]>([])
-
-    const filteredJobs = jobs.filter((job) => {
-        const matchesDepartment = selectedDepartments.length === 0 || selectedDepartments.includes(job.department)
-        const matchesType = selectedJobTypes.length === 0 || selectedJobTypes.includes(job.type)
-        const matchesLocation = selectedLocations.length === 0 || selectedLocations.includes(job.location)
-        return matchesDepartment && matchesType && matchesLocation
-    })
-
-    const clearFilters = () => {
-        setSelectedDepartments([])
-        setSelectedJobTypes([])
-        setSelectedLocations([])
-    }
+export default async function JobsPage() {
+    const jobs = await getJobs();
 
     return (
-        <div className="min-h-screen bg-gray-50/50">
-            {/* Top Header */}
-            <CandidateHeader />
+        <div className="min-h-screen bg-background">
+            {/* Header */}
+            <header className="border-b bg-card">
+                <div className="container mx-auto flex h-16 items-center justify-between px-4">
+                    <Link href="/" className="flex items-center gap-2 font-bold text-xl text-primary">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground text-sm">
+                            TF
+                        </div>
+                        TalentFlow
+                    </Link>
+                    <nav className="flex items-center gap-4">
+                        <Link href="/login">
+                            <Button variant="ghost">Log In</Button>
+                        </Link>
+                        <Link href="/login">
+                            <Button>For Employers</Button>
+                        </Link>
+                    </nav>
+                </div>
+            </header>
 
-            <main className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-                <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight text-foreground">Job Board</h1>
-                        <p className="text-muted-foreground mt-1">Find your next opportunity from top companies</p>
+            <main className="container mx-auto py-12 px-4">
+                {/* Hero Section */}
+                <div className="mb-12 text-center">
+                    <h1 className="text-4xl font-bold tracking-tight mb-4">Find Your Next Opportunity</h1>
+                    <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-8">
+                        Browse open positions at top companies. Your dream job is just a click away.
+                    </p>
+
+                    {/* Search Bar */}
+                    <div className="max-w-xl mx-auto flex gap-2">
+                        <div className="relative flex-1">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <input
+                                type="text"
+                                placeholder="Search jobs by title, skill, or company..."
+                                className="w-full pl-10 pr-4 py-2 border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                        </div>
+                        <Button>Search</Button>
                     </div>
-                    <Button size="lg" className="shadow-lg shadow-primary/20">Post a Job</Button>
                 </div>
 
-                <div className="flex flex-col gap-8 lg:flex-row">
-                    <Sidebar
-                        selectedDepartments={selectedDepartments}
-                        setSelectedDepartments={setSelectedDepartments}
-                        selectedJobTypes={selectedJobTypes}
-                        setSelectedJobTypes={setSelectedJobTypes}
-                        selectedLocations={selectedLocations}
-                        setSelectedLocations={setSelectedLocations}
-                        onClear={clearFilters}
-                    />
-
-                    <div className="flex-1 space-y-4">
-                        <div className="flex items-center justify-between pb-2">
-                            <h2 className="font-semibold text-lg">Recommended Jobs <span className="ml-2 rounded-full bg-gray-100 px-2.5 py-0.5 text-xs text-gray-600">{filteredJobs.length}</span></h2>
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                <span>Sort by:</span>
-                                <select className="border-none bg-transparent font-medium text-foreground focus:ring-0">
-                                    <option>Most Recent</option>
-                                    <option>Relevance</option>
-                                    <option>Salary (High-Low)</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div className="grid gap-4">
-                            {filteredJobs.map((job) => (
-                                <JobCard key={job.title + job.company} {...job} />
-                            ))}
-                            {filteredJobs.length === 0 && (
-                                <div className="py-12 text-center text-muted-foreground bg-white rounded-lg border border-dashed">
-                                    <p>No jobs match your filters.</p>
-                                    <Button variant="link" onClick={clearFilters} className="mt-2">Clear all filters</Button>
-                                </div>
-                            )}
-                        </div>
+                {/* Stats */}
+                <div className="flex justify-center gap-8 mb-12 text-center">
+                    <div>
+                        <div className="text-3xl font-bold text-primary">{jobs.length}</div>
+                        <div className="text-sm text-muted-foreground">Open Positions</div>
                     </div>
+                    <div>
+                        <div className="text-3xl font-bold text-primary">50+</div>
+                        <div className="text-sm text-muted-foreground">Companies Hiring</div>
+                    </div>
+                    <div>
+                        <div className="text-3xl font-bold text-primary">1,200+</div>
+                        <div className="text-sm text-muted-foreground">Candidates Placed</div>
+                    </div>
+                </div>
+
+                {/* Job Grid */}
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    {jobs.length === 0 ? (
+                        <div className="col-span-full text-center py-16 border rounded-lg bg-muted/30">
+                            <Briefcase className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                            <h3 className="text-lg font-semibold mb-2">No open positions</h3>
+                            <p className="text-muted-foreground">Check back soon for new opportunities!</p>
+                        </div>
+                    ) : (
+                        jobs.map((job) => (
+                            <Link key={job.id} href={`/jobs/${job.id}`} className="block group">
+                                <div className="h-full rounded-xl border bg-card p-6 shadow-sm transition-all hover:shadow-lg hover:border-primary/50">
+                                    <div className="mb-4 flex items-start justify-between">
+                                        <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20">
+                                            {job.department || 'General'}
+                                        </Badge>
+                                        <Badge variant="secondary">{job.type?.replace('_', ' ')}</Badge>
+                                    </div>
+
+                                    <h3 className="mb-2 text-xl font-bold group-hover:text-primary transition-colors">
+                                        {job.title}
+                                    </h3>
+
+                                    <div className="space-y-2 text-sm text-muted-foreground mb-6">
+                                        <div className="flex items-center gap-2">
+                                            <Briefcase className="h-4 w-4" />
+                                            <span>{job.company || 'Company'}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <MapPin className="h-4 w-4" />
+                                            <span>{job.location || 'Remote'}</span>
+                                        </div>
+                                        {(job.salaryMin || job.salaryMax) && (
+                                            <div className="flex items-center gap-2">
+                                                <DollarSign className="h-4 w-4" />
+                                                <span>
+                                                    {job.salaryMin && job.salaryMax
+                                                        ? `$${Number(job.salaryMin).toLocaleString()} - $${Number(job.salaryMax).toLocaleString()}`
+                                                        : job.salaryMin
+                                                            ? `From $${Number(job.salaryMin).toLocaleString()}`
+                                                            : `Up to $${Number(job.salaryMax).toLocaleString()}`}
+                                                </span>
+                                            </div>
+                                        )}
+                                        <div className="flex items-center gap-2">
+                                            <Clock className="h-4 w-4" />
+                                            <span>Posted {job.posted}</span>
+                                        </div>
+                                    </div>
+
+                                    <Button className="w-full">View Details</Button>
+                                </div>
+                            </Link>
+                        ))
+                    )}
                 </div>
             </main>
         </div>
-    )
+    );
 }
