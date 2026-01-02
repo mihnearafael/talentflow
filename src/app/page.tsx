@@ -1,4 +1,5 @@
-import { supabase } from '@/lib/supabase'
+import { db } from '@/db'
+import { users } from '@/db/schema'
 
 export default async function Home() {
     // Simple Server Action to fetch data (even if empty initially) or just check connection
@@ -11,11 +12,13 @@ export default async function Home() {
 
     async function testDatabaseConnection() {
         'use server'
-        // This runs on the server.
-        // In a real scenario, we would use `db.select().from(users)` here.
-        // For now, let's return a simulated response or try a basic Supabase query if credentials existed.
-        // Returning a static string for safety if no ENV keys are present yet.
-        return "Database connection pending (configure .env.local to activate)"
+        try {
+            const result = await db.select().from(users);
+            return `Database Connected! Found ${result.length} users.`;
+        } catch (error) {
+            console.error(error);
+            return "Failed to connect to database.";
+        }
     }
 
     const message = await testDatabaseConnection();
