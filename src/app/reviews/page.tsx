@@ -3,7 +3,8 @@ import { getEmployees } from "@/actions/employees";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { Star, Plus, Calendar, User } from "lucide-react";
+import { Star, Calendar, User } from "lucide-react";
+import { AddReviewDialog } from "@/components/forms/add-review-dialog";
 
 export default async function ReviewsPage() {
     const reviews = await getAllReviews();
@@ -19,14 +20,14 @@ export default async function ReviewsPage() {
             {/* Header */}
             <header className="border-b bg-card">
                 <div className="container mx-auto flex h-16 items-center justify-between px-4">
-                    <Link href="/dashboard" className="flex items-center gap-2 font-bold text-xl text-primary">
+                    <Link href="/" className="flex items-center gap-2 font-bold text-xl text-primary">
                         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground text-sm">
                             TF
                         </div>
                         TalentFlow
                     </Link>
                     <nav className="flex items-center gap-4">
-                        <Link href="/dashboard">
+                        <Link href="/">
                             <Button variant="ghost">Dashboard</Button>
                         </Link>
                         <Link href="/employees">
@@ -42,10 +43,7 @@ export default async function ReviewsPage() {
                         <h1 className="text-3xl font-bold tracking-tight">Performance Reviews</h1>
                         <p className="text-muted-foreground">Track and manage employee performance evaluations.</p>
                     </div>
-                    <Button>
-                        <Plus className="mr-2 h-4 w-4" />
-                        New Review
-                    </Button>
+                    <AddReviewDialog employees={employees} />
                 </div>
 
                 {/* Stats */}
@@ -86,10 +84,7 @@ export default async function ReviewsPage() {
                             <Star className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                             <h3 className="text-lg font-semibold mb-2">No reviews yet</h3>
                             <p className="text-muted-foreground mb-4">Start by conducting your first performance review.</p>
-                            <Button>
-                                <Plus className="mr-2 h-4 w-4" />
-                                Create Review
-                            </Button>
+                            <AddReviewDialog employees={employees} />
                         </div>
                     ) : (
                         <table className="w-full">

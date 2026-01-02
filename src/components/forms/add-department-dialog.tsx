@@ -1,0 +1,84 @@
+'use client'
+
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogDescription } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { createDepartment } from '@/actions/organizations'
+import { Loader2, Plus } from 'lucide-react'
+
+interface AddDepartmentDialogProps {
+    companies: { id: string; name: string }[]
+}
+
+export function AddDepartmentDialog({ companies }: AddDepartmentDialogProps) {
+    const [open, setOpen] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [companyId, setCompanyId] = useState('')
+
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault()
+        setLoading(true)
+        const formData = new FormData(e.currentTarget)
+
+        await createDepartment({
+            companyId,
+            name: formData.get('name') as string,
+            floorLocation: formData.get('floorLocation') as string,
+        })
+
+        setLoading(false)
+        setOpen(false)
+    }
+
+    return (
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+                <Button size="sm">
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add Department
+                </Button>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Add New Department</DialogTitle>
+                    <DialogDescription>Create a new department within a company.</DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="space-y-2">
+                        <Label>Company *</Label>
+                        <Select value={companyId} onValueChange={setCompanyId} required>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select a company" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {companies.map((company) => (
+                                    <SelectItem key={company.id} value={company.id}>
+                                        {company.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="name">Department Name *</Label>
+                        <Input id="name" name="name" required placeholder="Engineering" />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="floorLocation">Floor/Location</Label>
+                        <Input id="floorLocation" name="floorLocation" placeholder="3rd Floor" />
+                    </div>
+                    <DialogFooter>
+                        <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+                        <Button type="submit" disabled={loading || !companyId}>
+                            {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                            Create Department
+                        </Button>
+                    </DialogFooter>
+                </form>
+            </DialogContent>
+        </Dialog>
+    )
+}

@@ -2,7 +2,9 @@ import { getCompanies, getDepartments } from "@/actions/organizations";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { Building2, Users, MapPin, Plus, Settings, ArrowLeft } from "lucide-react";
+import { Building2, Users, MapPin, Settings, ArrowLeft } from "lucide-react";
+import { AddCompanyDialog } from "@/components/forms/add-company-dialog";
+import { AddDepartmentDialog } from "@/components/forms/add-department-dialog";
 
 export default async function SettingsPage() {
     const companies = await getCompanies();
@@ -13,14 +15,14 @@ export default async function SettingsPage() {
             {/* Header */}
             <header className="border-b bg-card">
                 <div className="container mx-auto flex h-16 items-center justify-between px-4">
-                    <Link href="/dashboard" className="flex items-center gap-2 font-bold text-xl text-primary">
+                    <Link href="/" className="flex items-center gap-2 font-bold text-xl text-primary">
                         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground text-sm">
                             TF
                         </div>
                         TalentFlow
                     </Link>
                     <nav className="flex items-center gap-4">
-                        <Link href="/dashboard">
+                        <Link href="/">
                             <Button variant="ghost">Dashboard</Button>
                         </Link>
                     </nav>
@@ -28,7 +30,7 @@ export default async function SettingsPage() {
             </header>
 
             <main className="container mx-auto py-8 px-4">
-                <Link href="/dashboard" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6">
+                <Link href="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6">
                     <ArrowLeft className="h-4 w-4" />
                     Back to dashboard
                 </Link>
@@ -49,10 +51,7 @@ export default async function SettingsPage() {
                                 <Building2 className="h-5 w-5" />
                                 <h2 className="font-semibold">Companies</h2>
                             </div>
-                            <Button size="sm">
-                                <Plus className="mr-2 h-4 w-4" />
-                                Add Company
-                            </Button>
+                            <AddCompanyDialog />
                         </div>
                         <div className="p-6">
                             {companies.length === 0 ? (
@@ -62,10 +61,6 @@ export default async function SettingsPage() {
                                     <p className="text-muted-foreground text-sm mb-4">
                                         Add your first company to get started.
                                     </p>
-                                    <Button>
-                                        <Plus className="mr-2 h-4 w-4" />
-                                        Add Company
-                                    </Button>
                                 </div>
                             ) : (
                                 <div className="space-y-4">
@@ -104,10 +99,7 @@ export default async function SettingsPage() {
                                 <Users className="h-5 w-5" />
                                 <h2 className="font-semibold">Departments</h2>
                             </div>
-                            <Button size="sm">
-                                <Plus className="mr-2 h-4 w-4" />
-                                Add Department
-                            </Button>
+                            <AddDepartmentDialog companies={companies} />
                         </div>
                         <div className="p-6">
                             {departments.length === 0 ? (
@@ -117,10 +109,6 @@ export default async function SettingsPage() {
                                     <p className="text-muted-foreground text-sm mb-4">
                                         Create departments to organize your teams.
                                     </p>
-                                    <Button>
-                                        <Plus className="mr-2 h-4 w-4" />
-                                        Add Department
-                                    </Button>
                                 </div>
                             ) : (
                                 <div className="space-y-4">

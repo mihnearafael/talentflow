@@ -1,11 +1,14 @@
 import { getJobs } from "@/actions/jobs";
+import { getDepartments } from "@/actions/organizations";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Briefcase, MapPin, DollarSign, Clock, Search } from "lucide-react";
+import { AddJobDialog } from "@/components/forms/add-job-dialog";
 
 export default async function JobsPage() {
     const jobs = await getJobs();
+    const departments = await getDepartments();
 
     return (
         <div className="min-h-screen bg-background">
@@ -19,12 +22,10 @@ export default async function JobsPage() {
                         TalentFlow
                     </Link>
                     <nav className="flex items-center gap-4">
-                        <Link href="/login">
-                            <Button variant="ghost">Log In</Button>
+                        <Link href="/">
+                            <Button variant="ghost">Dashboard</Button>
                         </Link>
-                        <Link href="/login">
-                            <Button>For Employers</Button>
-                        </Link>
+                        <AddJobDialog departments={departments} />
                     </nav>
                 </div>
             </header>
@@ -32,9 +33,9 @@ export default async function JobsPage() {
             <main className="container mx-auto py-12 px-4">
                 {/* Hero Section */}
                 <div className="mb-12 text-center">
-                    <h1 className="text-4xl font-bold tracking-tight mb-4">Find Your Next Opportunity</h1>
+                    <h1 className="text-4xl font-bold tracking-tight mb-4">Open Positions</h1>
                     <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-8">
-                        Browse open positions at top companies. Your dream job is just a click away.
+                        Browse open positions. Your dream job is just a click away.
                     </p>
 
                     {/* Search Bar */}
@@ -73,7 +74,8 @@ export default async function JobsPage() {
                         <div className="col-span-full text-center py-16 border rounded-lg bg-muted/30">
                             <Briefcase className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                             <h3 className="text-lg font-semibold mb-2">No open positions</h3>
-                            <p className="text-muted-foreground">Check back soon for new opportunities!</p>
+                            <p className="text-muted-foreground mb-4">Check back soon for new opportunities!</p>
+                            <AddJobDialog departments={departments} />
                         </div>
                     ) : (
                         jobs.map((job) => (

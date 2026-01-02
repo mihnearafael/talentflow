@@ -1,12 +1,15 @@
 import { getTrainingPrograms, getAllEnrollments } from "@/actions/training";
+import { getDepartments } from "@/actions/organizations";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { BookOpen, Clock, BarChart3, Users, Plus } from "lucide-react";
+import { BookOpen, Clock, BarChart3, Users } from "lucide-react";
+import { AddTrainingDialog } from "@/components/forms/add-training-dialog";
 
 export default async function TrainingPage() {
     const programs = await getTrainingPrograms();
     const enrollments = await getAllEnrollments();
+    const departments = await getDepartments();
 
     const activeEnrollments = enrollments.filter(e => e.enrollment.status !== 'COMPLETED');
     const completedEnrollments = enrollments.filter(e => e.enrollment.status === 'COMPLETED');
@@ -16,14 +19,14 @@ export default async function TrainingPage() {
             {/* Header */}
             <header className="border-b bg-card">
                 <div className="container mx-auto flex h-16 items-center justify-between px-4">
-                    <Link href="/dashboard" className="flex items-center gap-2 font-bold text-xl text-primary">
+                    <Link href="/" className="flex items-center gap-2 font-bold text-xl text-primary">
                         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground text-sm">
                             TF
                         </div>
                         TalentFlow
                     </Link>
                     <nav className="flex items-center gap-4">
-                        <Link href="/dashboard">
+                        <Link href="/">
                             <Button variant="ghost">Dashboard</Button>
                         </Link>
                         <Link href="/employees">
@@ -39,10 +42,7 @@ export default async function TrainingPage() {
                         <h1 className="text-3xl font-bold tracking-tight">Learning & Development</h1>
                         <p className="text-muted-foreground">Manage training programs and track employee development.</p>
                     </div>
-                    <Button>
-                        <Plus className="mr-2 h-4 w-4" />
-                        New Program
-                    </Button>
+                    <AddTrainingDialog departments={departments} />
                 </div>
 
                 {/* Stats */}
@@ -90,10 +90,7 @@ export default async function TrainingPage() {
                                 <BookOpen className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                                 <h3 className="text-lg font-semibold mb-2">No training programs</h3>
                                 <p className="text-muted-foreground mb-4">Create your first training program to get started.</p>
-                                <Button>
-                                    <Plus className="mr-2 h-4 w-4" />
-                                    Create Program
-                                </Button>
+                                <AddTrainingDialog departments={departments} />
                             </div>
                         ) : (
                             programs.map((program) => (

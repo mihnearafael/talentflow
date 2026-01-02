@@ -1,25 +1,29 @@
 import { getEmployees } from "@/actions/employees";
+import { getCompanies, getDepartments } from "@/actions/organizations";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { Users, Search, UserPlus, Mail, Building2 } from "lucide-react";
+import { Users, Search, Mail, Building2 } from "lucide-react";
+import { AddEmployeeDialog } from "@/components/forms/add-employee-dialog";
 
 export default async function EmployeesPage() {
     const employees = await getEmployees();
+    const companies = await getCompanies();
+    const departments = await getDepartments();
 
     return (
         <div className="min-h-screen bg-background">
             {/* Header */}
             <header className="border-b bg-card">
                 <div className="container mx-auto flex h-16 items-center justify-between px-4">
-                    <Link href="/dashboard" className="flex items-center gap-2 font-bold text-xl text-primary">
+                    <Link href="/" className="flex items-center gap-2 font-bold text-xl text-primary">
                         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground text-sm">
                             TF
                         </div>
                         TalentFlow
                     </Link>
                     <nav className="flex items-center gap-4">
-                        <Link href="/dashboard">
+                        <Link href="/">
                             <Button variant="ghost">Dashboard</Button>
                         </Link>
                         <Link href="/jobs">
@@ -35,10 +39,7 @@ export default async function EmployeesPage() {
                         <h1 className="text-3xl font-bold tracking-tight">Employee Directory</h1>
                         <p className="text-muted-foreground">{employees.length} total employees</p>
                     </div>
-                    <Button>
-                        <UserPlus className="mr-2 h-4 w-4" />
-                        Add Employee
-                    </Button>
+                    <AddEmployeeDialog companies={companies} departments={departments} />
                 </div>
 
                 {/* Search */}
@@ -60,10 +61,7 @@ export default async function EmployeesPage() {
                             <Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                             <h3 className="text-lg font-semibold mb-2">No employees found</h3>
                             <p className="text-muted-foreground mb-4">Get started by adding your first employee.</p>
-                            <Button>
-                                <UserPlus className="mr-2 h-4 w-4" />
-                                Add Employee
-                            </Button>
+                            <AddEmployeeDialog companies={companies} departments={departments} />
                         </div>
                     ) : (
                         employees.map((employee) => (
