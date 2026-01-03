@@ -162,39 +162,6 @@ export default async function DashboardPage() {
                             )}
                         </div>
                     </div>
-
-                    {/* Quick Actions */}
-                    <div className="rounded-xl border border-border/50 bg-card shadow-sm lg:col-span-2 hover:shadow-md transition-shadow">
-                        <div className="p-6 border-b border-border/50">
-                            <h2 className="font-bold text-lg">Quick Actions</h2>
-                        </div>
-                        <div className="p-6 grid gap-4 sm:grid-cols-2 md:grid-cols-4">
-                            <Link href="/jobs">
-                                <Button variant="outline" className="w-full h-auto py-8 flex-col hover:border-primary hover:text-primary hover:bg-primary/5 transition-all group">
-                                    <Briefcase className="h-8 w-8 mb-3 text-muted-foreground group-hover:text-primary transition-colors" />
-                                    <span className="font-semibold">Post a Job</span>
-                                </Button>
-                            </Link>
-                            <Link href="/employees">
-                                <Button variant="outline" className="w-full h-auto py-8 flex-col hover:border-primary hover:text-primary hover:bg-primary/5 transition-all group">
-                                    <Users className="h-8 w-8 mb-3 text-muted-foreground group-hover:text-primary transition-colors" />
-                                    <span className="font-semibold">Add Employee</span>
-                                </Button>
-                            </Link>
-                            <Link href="/training">
-                                <Button variant="outline" className="w-full h-auto py-8 flex-col hover:border-primary hover:text-primary hover:bg-primary/5 transition-all group">
-                                    <BookOpen className="h-8 w-8 mb-3 text-muted-foreground group-hover:text-primary transition-colors" />
-                                    <span className="font-semibold">Create Training</span>
-                                </Button>
-                            </Link>
-                            <Link href="/reviews">
-                                <Button variant="outline" className="w-full h-auto py-8 flex-col hover:border-primary hover:text-primary hover:bg-primary/5 transition-all group">
-                                    <TrendingUp className="h-8 w-8 mb-3 text-muted-foreground group-hover:text-primary transition-colors" />
-                                    <span className="font-semibold">New Review</span>
-                                </Button>
-                            </Link>
-                        </div>
-                    </div>
                 </div>
             </main>
         </div>
