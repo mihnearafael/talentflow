@@ -1,15 +1,18 @@
 import { getTrainingPrograms, getAllEnrollments } from "@/actions/training";
 import { getDepartments } from "@/actions/organizations";
+import { getEmployees } from "@/actions/employees";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { BookOpen, Clock, BarChart3, Users } from "lucide-react";
 import { AddTrainingDialog } from "@/components/forms/add-training-dialog";
+import { EnrollEmployeeDialog } from "@/components/forms/enroll-employee-dialog";
 
 export default async function TrainingPage() {
     const programs = await getTrainingPrograms();
     const enrollments = await getAllEnrollments();
     const departments = await getDepartments();
+    const employees = await getEmployees();
 
     const activeEnrollments = enrollments.filter(e => e.enrollment.status !== 'COMPLETED');
     const completedEnrollments = enrollments.filter(e => e.enrollment.status === 'COMPLETED');
@@ -23,7 +26,10 @@ export default async function TrainingPage() {
                         <h1 className="text-3xl font-bold tracking-tight">Learning & Development</h1>
                         <p className="text-muted-foreground">Manage training programs and track employee development.</p>
                     </div>
-                    <AddTrainingDialog departments={departments} />
+                    <div className="flex gap-2">
+                        <EnrollEmployeeDialog employees={employees} programs={programs} />
+                        <AddTrainingDialog departments={departments} />
+                    </div>
                 </div>
 
                 {/* Stats */}
@@ -71,7 +77,9 @@ export default async function TrainingPage() {
                                 <BookOpen className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                                 <h3 className="text-lg font-semibold mb-2">No training programs</h3>
                                 <p className="text-muted-foreground mb-4">Create your first training program to get started.</p>
-                                <AddTrainingDialog departments={departments} />
+                                <div className="flex justify-center gap-2">
+                                    <AddTrainingDialog departments={departments} />
+                                </div>
                             </div>
                         ) : (
                             programs.map((program) => (
@@ -98,9 +106,13 @@ export default async function TrainingPage() {
                                         <Badge variant="secondary">{program.department || 'General'}</Badge>
                                     </div>
 
-                                    <Button variant="outline" className="w-full mt-4">
-                                        Enroll Employees
-                                    </Button>
+                                    <div className="mt-4">
+                                        <EnrollEmployeeDialog
+                                            employees={employees}
+                                            programs={programs}
+                                            defaultProgramId={program.id}
+                                        />
+                                    </div>
                                 </div>
                             ))
                         )}
