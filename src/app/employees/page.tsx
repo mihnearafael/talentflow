@@ -12,7 +12,7 @@ export default async function EmployeesPage() {
     const departments = await getDepartments();
 
     return (
-        <div className="bg-background animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="bg-background page-enter">
 
             <main className="container mx-auto py-8 px-4">
                 <div className="flex items-center justify-between mb-8">

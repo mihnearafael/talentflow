@@ -29,7 +29,7 @@ export default async function DashboardPage() {
     const recentEmployees = employees.slice(0, 5);
 
     return (
-        <div className="bg-background animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="bg-background page-enter">
             <main className="container mx-auto py-8 px-4">
                 {/* Welcome */}
                 <div className="mb-8">

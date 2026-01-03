@@ -11,7 +11,7 @@ export default async function SettingsPage() {
     const departments = await getDepartments();
 
     return (
-        <div className="bg-background animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="bg-background page-enter">
 
             <main className="container mx-auto py-8 px-4">
                 <Link href="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6">
