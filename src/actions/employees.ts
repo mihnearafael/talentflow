@@ -41,7 +41,6 @@ export async function getEmployeeById(employeeId: string) {
         department: departments.name,
         companyId: employees.companyId,
         company: companies.name,
-        managerId: employees.managerId,
     })
         .from(employees)
         .leftJoin(departments, eq(employees.departmentId, departments.id))
