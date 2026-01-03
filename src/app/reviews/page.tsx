@@ -16,26 +16,7 @@ export default async function ReviewsPage() {
         : '0.0';
 
     return (
-        <div className="min-h-screen bg-background">
-            {/* Header */}
-            <header className="border-b bg-card">
-                <div className="container mx-auto flex h-16 items-center justify-between px-4">
-                    <Link href="/" className="flex items-center gap-2 font-bold text-xl text-primary">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground text-sm">
-                            TF
-                        </div>
-                        TalentFlow
-                    </Link>
-                    <nav className="flex items-center gap-4">
-                        <Link href="/">
-                            <Button variant="ghost">Dashboard</Button>
-                        </Link>
-                        <Link href="/employees">
-                            <Button variant="ghost">Employees</Button>
-                        </Link>
-                    </nav>
-                </div>
-            </header>
+        <div className="bg-background animate-in fade-in slide-in-from-bottom-4 duration-500">
 
             <main className="container mx-auto py-8 px-4">
                 <div className="flex items-center justify-between mb-8">
@@ -116,8 +97,8 @@ export default async function ReviewsPage() {
                                                     <Star
                                                         key={star}
                                                         className={`h-4 w-4 ${star <= (item.review.rating || 0)
-                                                                ? 'text-yellow-500 fill-current'
-                                                                : 'text-gray-300'
+                                                            ? 'text-yellow-500 fill-current'
+                                                            : 'text-gray-300'
                                                             }`}
                                                     />
                                                 ))}

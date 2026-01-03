@@ -11,23 +11,7 @@ export default async function SettingsPage() {
     const departments = await getDepartments();
 
     return (
-        <div className="min-h-screen bg-background">
-            {/* Header */}
-            <header className="border-b bg-card">
-                <div className="container mx-auto flex h-16 items-center justify-between px-4">
-                    <Link href="/" className="flex items-center gap-2 font-bold text-xl text-primary">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground text-sm">
-                            TF
-                        </div>
-                        TalentFlow
-                    </Link>
-                    <nav className="flex items-center gap-4">
-                        <Link href="/">
-                            <Button variant="ghost">Dashboard</Button>
-                        </Link>
-                    </nav>
-                </div>
-            </header>
+        <div className="bg-background animate-in fade-in slide-in-from-bottom-4 duration-500">
 
             <main className="container mx-auto py-8 px-4">
                 <Link href="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6">

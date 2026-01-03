@@ -11,24 +11,7 @@ export default async function JobsPage() {
     const departments = await getDepartments();
 
     return (
-        <div className="min-h-screen bg-background">
-            {/* Header */}
-            <header className="border-b bg-card">
-                <div className="container mx-auto flex h-16 items-center justify-between px-4">
-                    <Link href="/" className="flex items-center gap-2 font-bold text-xl text-primary">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground text-sm">
-                            TF
-                        </div>
-                        TalentFlow
-                    </Link>
-                    <nav className="flex items-center gap-4">
-                        <Link href="/">
-                            <Button variant="ghost">Dashboard</Button>
-                        </Link>
-                        <AddJobDialog departments={departments} />
-                    </nav>
-                </div>
-            </header>
+        <div className="bg-background animate-in fade-in slide-in-from-bottom-4 duration-500">
 
             <main className="container mx-auto py-12 px-4">
                 {/* Hero Section */}
@@ -45,10 +28,11 @@ export default async function JobsPage() {
                             <input
                                 type="text"
                                 placeholder="Search jobs by title, skill, or company..."
-                                className="w-full pl-10 pr-4 py-2 border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+                                className="w-full pl-10 pr-4 py-2 border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
                             />
                         </div>
-                        <Button>Search</Button>
+                        <Button className="shadow-sm">Search</Button>
+                        <AddJobDialog departments={departments} />
                     </div>
                 </div>
 
