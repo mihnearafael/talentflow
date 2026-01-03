@@ -1,11 +1,23 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Settings, Plus } from "lucide-react";
+import { Settings } from "lucide-react";
+import { GlobalQuickAdd } from "@/components/global-quick-add";
+import { MobileNav } from "@/components/mobile-nav";
+import { getCompanies, getDepartments } from "@/actions/organizations";
 
-export function Navbar() {
+export async function Navbar() {
+    // Fetch data for quick actions
+    const [companies, departments] = await Promise.all([
+        getCompanies(),
+        getDepartments()
+    ]);
+
     return (
         <nav className="sticky top-0 z-50 w-full glass border-b border-border/40">
             <div className="container mx-auto flex h-16 items-center justify-between px-4">
+                {/* Mobile Menu */}
+                <MobileNav />
+
                 {/* Left Side: Logo */}
                 <Link href="/" className="flex items-center gap-2 font-bold text-xl text-foreground hover:opacity-80 transition-opacity">
                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground text-sm shadow-md">
@@ -37,9 +49,8 @@ export function Navbar() {
                             <Settings className="h-5 w-5 text-muted-foreground" />
                         </Button>
                     </Link>
-                    <Button size="sm" className="shadow-sm hover:shadow-md transition-all">
-                        <Plus className="h-4 w-4 mr-1" /> Quick Add
-                    </Button>
+
+                    <GlobalQuickAdd companies={companies} departments={departments} />
                 </div>
             </div>
         </nav>

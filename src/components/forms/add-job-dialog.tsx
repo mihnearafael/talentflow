@@ -12,10 +12,17 @@ import { Loader2, Plus } from 'lucide-react'
 
 interface AddJobDialogProps {
     departments: { id: string; name: string }[]
+    open?: boolean
+    onOpenChange?: (open: boolean) => void
+    hideTrigger?: boolean
 }
 
-export function AddJobDialog({ departments }: AddJobDialogProps) {
-    const [open, setOpen] = useState(false)
+export function AddJobDialog({ departments, open: controlledOpen, onOpenChange: setControlledOpen, hideTrigger }: AddJobDialogProps) {
+    const [internalOpen, setInternalOpen] = useState(false)
+    const isControlled = controlledOpen !== undefined
+    const open = isControlled ? controlledOpen : internalOpen
+    const setOpen = isControlled && setControlledOpen ? setControlledOpen : setInternalOpen
+
     const [loading, setLoading] = useState(false)
     const [departmentId, setDepartmentId] = useState('')
     const [employmentType, setEmploymentType] = useState<'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'INTERN'>('FULL_TIME')
@@ -41,12 +48,14 @@ export function AddJobDialog({ departments }: AddJobDialogProps) {
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Post Job
-                </Button>
-            </DialogTrigger>
+            {!hideTrigger && (
+                <DialogTrigger asChild>
+                    <Button>
+                        <Plus className="mr-2 h-4 w-4" />
+                        Post Job
+                    </Button>
+                </DialogTrigger>
+            )}
             <DialogContent className="max-w-lg">
                 <DialogHeader>
                     <DialogTitle>Post New Job</DialogTitle>

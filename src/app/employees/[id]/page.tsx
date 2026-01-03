@@ -19,22 +19,7 @@ export default async function EmployeeDetailPage({ params }: { params: Promise<{
 
     return (
         <div className="min-h-screen bg-background">
-            {/* Header */}
-            <header className="border-b bg-card">
-                <div className="container mx-auto flex h-16 items-center justify-between px-4">
-                    <Link href="/dashboard" className="flex items-center gap-2 font-bold text-xl text-primary">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground text-sm">
-                            TF
-                        </div>
-                        TalentFlow
-                    </Link>
-                    <nav className="flex items-center gap-4">
-                        <Link href="/employees">
-                            <Button variant="ghost">Employees</Button>
-                        </Link>
-                    </nav>
-                </div>
-            </header>
+
 
             <main className="container mx-auto py-8 px-4">
                 <Link href="/employees" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6">

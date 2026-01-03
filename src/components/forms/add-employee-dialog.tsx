@@ -12,10 +12,17 @@ import { Loader2, UserPlus } from 'lucide-react'
 interface AddEmployeeDialogProps {
     companies: { id: string; name: string }[]
     departments: { id: string; name: string; companyId: string | null }[]
+    open?: boolean
+    onOpenChange?: (open: boolean) => void
+    hideTrigger?: boolean
 }
 
-export function AddEmployeeDialog({ companies, departments }: AddEmployeeDialogProps) {
-    const [open, setOpen] = useState(false)
+export function AddEmployeeDialog({ companies, departments, open: controlledOpen, onOpenChange: setControlledOpen, hideTrigger }: AddEmployeeDialogProps) {
+    const [internalOpen, setInternalOpen] = useState(false)
+    const isControlled = controlledOpen !== undefined
+    const open = isControlled ? controlledOpen : internalOpen
+    const setOpen = isControlled && setControlledOpen ? setControlledOpen : setInternalOpen
+
     const [loading, setLoading] = useState(false)
     const [companyId, setCompanyId] = useState('')
     const [departmentId, setDepartmentId] = useState('')
@@ -45,12 +52,14 @@ export function AddEmployeeDialog({ companies, departments }: AddEmployeeDialogP
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button>
-                    <UserPlus className="mr-2 h-4 w-4" />
-                    Add Employee
-                </Button>
-            </DialogTrigger>
+            {!hideTrigger && (
+                <DialogTrigger asChild>
+                    <Button>
+                        <UserPlus className="mr-2 h-4 w-4" />
+                        Add Employee
+                    </Button>
+                </DialogTrigger>
+            )}
             <DialogContent className="max-w-lg">
                 <DialogHeader>
                     <DialogTitle>Add New Employee</DialogTitle>
