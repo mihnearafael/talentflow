@@ -16,8 +16,8 @@ export async function getJobs(search?: string) {
         company: companies.name,
         location: companies.location,
         type: jobPostings.employmentType,
-        salaryMin: jobPostings.salaryRangeMin,
-        salaryMax: jobPostings.salaryRangeMax,
+        salaryMin: jobPostings.salaryRangeMinimum,
+        salaryMax: jobPostings.salaryRangeMaximum,
         posted: jobPostings.postedDate,
         closing: jobPostings.closingDate,
         status: jobPostings.status,
@@ -42,8 +42,8 @@ export async function getJobById(jobId: string) {
         companyId: companies.id,
         location: companies.location,
         type: jobPostings.employmentType,
-        salaryMin: jobPostings.salaryRangeMin,
-        salaryMax: jobPostings.salaryRangeMax,
+        salaryMin: jobPostings.salaryRangeMinimum,
+        salaryMax: jobPostings.salaryRangeMaximum,
         posted: jobPostings.postedDate,
         closing: jobPostings.closingDate,
         status: jobPostings.status,
@@ -74,8 +74,8 @@ export async function createJob(data: {
     jobTitle: string;
     description: string;
     employmentType: 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'INTERN';
-    salaryRangeMin?: string;
-    salaryRangeMax?: string;
+    salaryRangeMinimum?: string;
+    salaryRangeMaximum?: string;
     closingDate?: string;
 }) {
     const [newJob] = await db.insert(jobPostings).values({
@@ -83,8 +83,8 @@ export async function createJob(data: {
         jobTitle: data.jobTitle,
         description: data.description,
         employmentType: data.employmentType,
-        salaryRangeMin: data.salaryRangeMin,
-        salaryRangeMax: data.salaryRangeMax,
+        salaryRangeMinimum: data.salaryRangeMinimum,
+        salaryRangeMaximum: data.salaryRangeMaximum,
         closingDate: data.closingDate,
     }).returning();
 

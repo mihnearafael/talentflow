@@ -30,8 +30,8 @@ export function AddJobDialog({ departments }: AddJobDialogProps) {
             jobTitle: formData.get('jobTitle') as string,
             description: formData.get('description') as string,
             employmentType,
-            salaryRangeMin: formData.get('salaryMin') as string,
-            salaryRangeMax: formData.get('salaryMax') as string,
+            salaryRangeMinimum: formData.get('salaryMin') as string,
+            salaryRangeMaximum: formData.get('salaryMax') as string,
             closingDate: formData.get('closingDate') as string,
         })
 

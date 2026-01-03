@@ -1,5 +1,4 @@
 import { pgTable, text, timestamp, uuid, integer, pgEnum, date, decimal, boolean } from 'drizzle-orm/pg-core';
-import { relations } from 'drizzle-orm';
 
 // --- Enums ---
 export const employmentTypeEnum = pgEnum('employment_type', ['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERN']);
@@ -10,53 +9,51 @@ export const difficultyLevelEnum = pgEnum('difficulty_level', ['BEGINNER', 'INTE
 export const interviewTypeEnum = pgEnum('interview_type', ['PHONE', 'VIDEO', 'ONSITE']);
 
 // --- Organizational ---
-export const companies = pgTable('companies', {
+export const company = pgTable('company', {
     id: uuid('company_id').primaryKey().defaultRandom(),
     name: text('name').notNull(),
     industry: text('industry'),
     location: text('location'),
     website: text('website'),
     description: text('description'),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
-export const departments = pgTable('departments', {
+export const department = pgTable('department', {
     id: uuid('department_id').primaryKey().defaultRandom(),
-    companyId: uuid('company_id').references(() => companies.id).notNull(),
+    companyId: uuid('company_id').references(() => company.id).notNull(),
     name: text('name').notNull(),
-    managerId: uuid('manager_id'), // Self-reference to employee handled in relations safely or treated as raw uuid for now
+    managerId: uuid('manager_id'),
     floorLocation: text('floor_location'),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
 // --- Recruitment ---
-export const skills = pgTable('skills', {
+export const skill = pgTable('skill', {
     id: uuid('skill_id').primaryKey().defaultRandom(),
     skillName: text('skill_name').notNull(),
     category: text('category'),
 });
 
-export const jobPostings = pgTable('job_postings', {
+export const jobPosting = pgTable('job_posting', {
     id: uuid('job_id').primaryKey().defaultRandom(),
-    departmentId: uuid('department_id').references(() => departments.id).notNull(),
+    departmentId: uuid('department_id').references(() => department.id).notNull(),
     jobTitle: text('job_title').notNull(),
     description: text('description').notNull(),
     employmentType: employmentTypeEnum('employment_type').notNull(),
-    salaryRangeMin: decimal('salary_range_min'),
-    salaryRangeMax: decimal('salary_range_max'),
+    salaryRangeMinimum: decimal('salary_range_minimum'),
+    salaryRangeMaximum: decimal('salary_range_maximum'),
     postedDate: date('posted_date').defaultNow().notNull(),
     closingDate: date('closing_date'),
-    status: text('status').default('OPEN'), // OPEN, CLOSED
+    status: text('status').default('OPEN'),
 });
 
-export const jobSkills = pgTable('job_skills', {
+export const jobSkill = pgTable('job_skill', {
     id: uuid('job_skill_id').primaryKey().defaultRandom(),
-    jobId: uuid('job_id').references(() => jobPostings.id).notNull(),
-    skillId: uuid('skill_id').references(() => skills.id).notNull(),
-    requiredLevel: integer('required_level'), // 1-5 scale
+    jobId: uuid('job_id').references(() => jobPosting.id).notNull(),
+    skillId: uuid('skill_id').references(() => skill.id).notNull(),
+    requiredLevel: integer('required_level'),
 });
 
-export const candidates = pgTable('candidates', {
+export const candidate = pgTable('candidate', {
     id: uuid('candidate_id').primaryKey().defaultRandom(),
     firstName: text('first_name').notNull(),
     lastName: text('last_name').notNull(),
@@ -65,29 +62,28 @@ export const candidates = pgTable('candidates', {
     resumeUrl: text('resume_url'),
     yearsExperience: integer('years_experience'),
     educationLevel: text('education_level'),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
-export const candidateSkills = pgTable('candidate_skills', {
+export const candidateSkill = pgTable('candidate_skill', {
     id: uuid('candidate_skill_id').primaryKey().defaultRandom(),
-    candidateId: uuid('candidate_id').references(() => candidates.id).notNull(),
-    skillId: uuid('skill_id').references(() => skills.id).notNull(),
+    candidateId: uuid('candidate_id').references(() => candidate.id).notNull(),
+    skillId: uuid('skill_id').references(() => skill.id).notNull(),
     proficiencyLevel: integer('proficiency_level'),
     yearsExperience: integer('years_experience'),
 });
 
-export const applications = pgTable('applications', {
+export const application = pgTable('application', {
     id: uuid('application_id').primaryKey().defaultRandom(),
-    candidateId: uuid('candidate_id').references(() => candidates.id).notNull(),
-    jobId: uuid('job_id').references(() => jobPostings.id).notNull(),
+    candidateId: uuid('candidate_id').references(() => candidate.id).notNull(),
+    jobId: uuid('job_id').references(() => jobPosting.id).notNull(),
     applicationDate: date('application_date').defaultNow().notNull(),
     status: applicationStatusEnum('status').default('APPLIED').notNull(),
     coverLetterUrl: text('cover_letter_url'),
 });
 
-export const offers = pgTable('offers', {
+export const offer = pgTable('offer', {
     id: uuid('offer_id').primaryKey().defaultRandom(),
-    applicationId: uuid('application_id').references(() => applications.id).notNull(),
+    applicationId: uuid('application_id').references(() => application.id).notNull(),
     offerDate: date('offer_date').defaultNow().notNull(),
     salary: decimal('salary').notNull(),
     positionTitle: text('position_title').notNull(),
@@ -95,16 +91,10 @@ export const offers = pgTable('offers', {
 });
 
 // --- Evaluation ---
-// In a real system, interviewers and recruiters are just Employees with roles.
-// But following ERD strictly, let's create specific tables or link them to Employee if possible.
-// The ERD shows Interviewer and Recruiter tables separate or subtypes. 
-// For strict ERD compliance based on the request "follow exact logic", I will create separate tables 
-// but it's best practice to link them to `employees`.
-// Looking at ERD, Interviewer has `company_id` and `department_id`.
-export const interviewers = pgTable('interviewers', {
+export const interviewer = pgTable('interviewer', {
     id: uuid('interviewer_id').primaryKey().defaultRandom(),
-    companyId: uuid('company_id').references(() => companies.id),
-    departmentId: uuid('department_id').references(() => departments.id),
+    companyId: uuid('company_id').references(() => company.id),
+    departmentId: uuid('department_id').references(() => department.id),
     firstName: text('first_name').notNull(),
     lastName: text('last_name').notNull(),
     email: text('email_address').notNull(),
@@ -112,9 +102,9 @@ export const interviewers = pgTable('interviewers', {
     jobTitle: text('job_title'),
 });
 
-export const recruiters = pgTable('recruiters', {
+export const recruiter = pgTable('recruiter', {
     id: uuid('recruiter_id').primaryKey().defaultRandom(),
-    companyId: uuid('company_id').references(() => companies.id),
+    companyId: uuid('company_id').references(() => company.id),
     firstName: text('first_name').notNull(),
     lastName: text('last_name').notNull(),
     email: text('email_address').notNull(),
@@ -122,27 +112,27 @@ export const recruiters = pgTable('recruiters', {
     position: text('position'),
 });
 
-export const interviews = pgTable('interviews', {
+export const interview = pgTable('interview', {
     id: uuid('interview_id').primaryKey().defaultRandom(),
-    applicationId: uuid('application_id').references(() => applications.id).notNull(),
-    interviewerId: uuid('interviewer_id').references(() => interviewers.id).notNull(),
+    applicationId: uuid('application_id').references(() => application.id).notNull(),
+    interviewerId: uuid('interviewer_id').references(() => interviewer.id).notNull(),
     interviewDate: timestamp('interview_date').notNull(),
     interviewType: interviewTypeEnum('interview_type').notNull(),
     feedback: text('feedback'),
-    score: integer('score'), // 1-10
+    score: integer('score'),
 });
 
-export const testAssessments = pgTable('test_assessments', {
+export const testAssessment = pgTable('test_assessment', {
     id: uuid('test_id').primaryKey().defaultRandom(),
-    applicationId: uuid('application_id').references(() => applications.id).notNull(),
-    testType: text('test_type').notNull(), // Coding, Personality, etc.
+    applicationId: uuid('application_id').references(() => application.id).notNull(),
+    testType: text('test_type').notNull(),
     assignedDate: date('assigned_date').defaultNow(),
     durationMinutes: integer('duration_minutes'),
 });
 
-export const testResults = pgTable('test_results', {
+export const testResult = pgTable('test_result', {
     id: uuid('result_id').primaryKey().defaultRandom(),
-    testId: uuid('test_id').references(() => testAssessments.id).notNull(),
+    testId: uuid('test_id').references(() => testAssessment.id).notNull(),
     score: integer('score'),
     passed: boolean('passed'),
     feedback: text('feedback'),
@@ -150,10 +140,10 @@ export const testResults = pgTable('test_results', {
 });
 
 // --- Employee Management ---
-export const employees = pgTable('employees', {
+export const employee = pgTable('employee', {
     id: uuid('employee_id').primaryKey().defaultRandom(),
-    companyId: uuid('company_id').references(() => companies.id).notNull(),
-    departmentId: uuid('department_id').references(() => departments.id).notNull(),
+    companyId: uuid('company_id').references(() => company.id).notNull(),
+    departmentId: uuid('department_id').references(() => department.id).notNull(),
     firstName: text('first_name').notNull(),
     lastName: text('last_name').notNull(),
     email: text('email_address').notNull().unique(),
@@ -161,13 +151,11 @@ export const employees = pgTable('employees', {
     hireDate: date('hire_date').notNull(),
     jobTitle: text('job_title').notNull(),
     salary: decimal('salary').notNull(),
-    // Manager ID self reference
-    managerId: uuid('manager_id'),
 });
 
-export const employeeContracts = pgTable('employee_contracts', {
+export const employeeContract = pgTable('employee_contract', {
     id: uuid('contract_id').primaryKey().defaultRandom(),
-    employeeId: uuid('employee_id').references(() => employees.id).notNull(),
+    employeeId: uuid('employee_id').references(() => employee.id).notNull(),
     startDate: date('start_date').notNull(),
     endDate: date('end_date'),
     contractType: employmentTypeEnum('contract_type').notNull(),
@@ -175,9 +163,9 @@ export const employeeContracts = pgTable('employee_contracts', {
     signedDate: date('signed_date'),
 });
 
-export const promotionRecords = pgTable('promotion_records', {
+export const promotionRecord = pgTable('promotion_record', {
     id: uuid('promotion_id').primaryKey().defaultRandom(),
-    employeeId: uuid('employee_id').references(() => employees.id).notNull(),
+    employeeId: uuid('employee_id').references(() => employee.id).notNull(),
     oldTitle: text('old_title'),
     newTitle: text('new_title').notNull(),
     oldSalary: decimal('old_salary'),
@@ -185,30 +173,53 @@ export const promotionRecords = pgTable('promotion_records', {
     promotionDate: date('promotion_date').defaultNow().notNull(),
 });
 
-export const performanceReviews = pgTable('performance_reviews', {
+export const performanceReview = pgTable('performance_review', {
     id: uuid('review_id').primaryKey().defaultRandom(),
-    employeeId: uuid('employee_id').references(() => employees.id).notNull(),
-    reviewerId: uuid('reviewer_id').references(() => employees.id).notNull(), // Assuming reviewer is an employee
+    employeeId: uuid('employee_id').references(() => employee.id).notNull(),
+    reviewerId: uuid('reviewer_id').references(() => employee.id).notNull(),
     reviewDate: date('review_date').defaultNow().notNull(),
-    rating: integer('rating'), // 1-5
+    rating: integer('rating'),
     comments: text('comments'),
 });
 
 // --- Training ---
-export const trainingPrograms = pgTable('training_programs', {
+export const trainingProgram = pgTable('training_program', {
     id: uuid('training_id').primaryKey().defaultRandom(),
-    departmentId: uuid('department_id').references(() => departments.id),
+    departmentId: uuid('department_id').references(() => department.id),
     programName: text('program_name').notNull(),
     description: text('description'),
     difficultyLevel: difficultyLevelEnum('difficulty_level'),
     durationHours: integer('duration_hours'),
 });
 
-export const trainingEnrollments = pgTable('training_enrollments', {
+export const trainingEnrollment = pgTable('training_enrollment', {
     id: uuid('enrollment_id').primaryKey().defaultRandom(),
-    employeeId: uuid('employee_id').references(() => employees.id).notNull(),
-    trainingId: uuid('training_id').references(() => trainingPrograms.id).notNull(),
+    employeeId: uuid('employee_id').references(() => employee.id).notNull(),
+    trainingId: uuid('training_id').references(() => trainingProgram.id).notNull(),
     enrollmentDate: date('enrollment_date').defaultNow().notNull(),
     completionDate: date('completion_date'),
     status: trainingStatusEnum('status').default('ENROLLED').notNull(),
 });
+
+// --- Legacy Exports (for backwards compatibility during migration) ---
+// These aliases allow gradual migration of imports
+export const companies = company;
+export const departments = department;
+export const skills = skill;
+export const jobPostings = jobPosting;
+export const jobSkills = jobSkill;
+export const candidates = candidate;
+export const candidateSkills = candidateSkill;
+export const applications = application;
+export const offers = offer;
+export const interviewers = interviewer;
+export const recruiters = recruiter;
+export const interviews = interview;
+export const testAssessments = testAssessment;
+export const testResults = testResult;
+export const employees = employee;
+export const employeeContracts = employeeContract;
+export const promotionRecords = promotionRecord;
+export const performanceReviews = performanceReview;
+export const trainingPrograms = trainingProgram;
+export const trainingEnrollments = trainingEnrollment;
