@@ -2,12 +2,12 @@
 
 import { db } from '@/db'
 import { employees, employeeContracts, promotionRecords, performanceReviews, departments, companies } from '@/db/schema'
-import { eq, desc } from 'drizzle-orm'
+import { eq, desc, or, ilike } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 
 // --- READ ---
-export async function getEmployees() {
-    return await db.select({
+export async function getEmployees(query?: string) {
+    let queryBuilder = db.select({
         id: employees.id,
         firstName: employees.firstName,
         lastName: employees.lastName,
@@ -24,7 +24,21 @@ export async function getEmployees() {
         .from(employees)
         .leftJoin(departments, eq(employees.departmentId, departments.id))
         .leftJoin(companies, eq(employees.companyId, companies.id))
-        .orderBy(employees.lastName);
+        .$dynamic();
+
+    if (query) {
+        const pattern = `%${query}%`;
+        queryBuilder = queryBuilder.where(
+            or(
+                ilike(employees.firstName, pattern),
+                ilike(employees.lastName, pattern),
+                ilike(employees.email, pattern),
+                ilike(employees.jobTitle, pattern)
+            )
+        );
+    }
+
+    return await queryBuilder.orderBy(employees.lastName);
 }
 
 export async function getEmployeeById(employeeId: string) {

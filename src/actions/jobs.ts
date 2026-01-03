@@ -7,7 +7,7 @@ import { revalidatePath } from 'next/cache'
 
 // --- READ ---
 export async function getJobs(search?: string) {
-    const query = db.select({
+    let queryBuilder = db.select({
         id: jobPostings.id,
         title: jobPostings.jobTitle,
         description: jobPostings.description,
@@ -25,10 +25,20 @@ export async function getJobs(search?: string) {
         .from(jobPostings)
         .leftJoin(departments, eq(jobPostings.departmentId, departments.id))
         .leftJoin(companies, eq(departments.companyId, companies.id))
-        .where(eq(jobPostings.status, 'OPEN'))
-        .orderBy(desc(jobPostings.postedDate));
+        .$dynamic();
 
-    return await query;
+    const conditions = [eq(jobPostings.status, 'OPEN')];
+
+    if (search) {
+        const pattern = `%${search}%`;
+        conditions.push(
+            or(
+                ilike(jobPostings.jobTitle, pattern),
+            )!
+        );
+    }
+
+    return await queryBuilder.where(and(...conditions)).orderBy(desc(jobPostings.postedDate));
 }
 
 export async function getJobById(jobId: string) {
