@@ -3,11 +3,13 @@ import { getDepartments } from "@/actions/organizations";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { Briefcase, MapPin, DollarSign, Clock, Search } from "lucide-react";
+import { Briefcase, MapPin, DollarSign, Clock } from "lucide-react";
 import { AddJobDialog } from "@/components/forms/add-job-dialog";
+import { SearchInput } from "@/components/search-input";
 
-export default async function JobsPage() {
-    const jobs = await getJobs();
+export default async function JobsPage({ searchParams }: { searchParams: Promise<{ query?: string }> }) {
+    const { query } = await searchParams;
+    const jobs = await getJobs(query);
     const departments = await getDepartments();
 
     return (
@@ -23,15 +25,7 @@ export default async function JobsPage() {
 
                     {/* Search Bar */}
                     <div className="max-w-xl mx-auto flex gap-2">
-                        <div className="relative flex-1">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <input
-                                type="text"
-                                placeholder="Search jobs by title, skill, or company..."
-                                className="w-full pl-10 pr-4 py-2 border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
-                            />
-                        </div>
-                        <Button className="shadow-sm">Search</Button>
+                        <SearchInput placeholder="Search jobs by title, skill, or company..." />
                         <AddJobDialog departments={departments} />
                     </div>
                 </div>

@@ -11,7 +11,7 @@ import { createTrainingProgram } from '@/actions/training'
 import { Loader2, Plus } from 'lucide-react'
 
 interface AddTrainingDialogProps {
-    departments: { id: string; name: string }[]
+    departments: { id: string; name: string; company: string | null }[]
 }
 
 export function AddTrainingDialog({ departments }: AddTrainingDialogProps) {
@@ -68,7 +68,9 @@ export function AddTrainingDialog({ departments }: AddTrainingDialogProps) {
                                 </SelectTrigger>
                                 <SelectContent>
                                     {departments.map((dept) => (
-                                        <SelectItem key={dept.id} value={dept.id}>{dept.name}</SelectItem>
+                                        <SelectItem key={dept.id} value={dept.id}>
+                                            {dept.name} {dept.company ? `(${dept.company})` : ''}
+                                        </SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>

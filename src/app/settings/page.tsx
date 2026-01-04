@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Building2, Users, MapPin, Settings, ArrowLeft } from "lucide-react";
-import { AddCompanyDialog } from "@/components/forms/add-company-dialog";
-import { AddDepartmentDialog } from "@/components/forms/add-department-dialog";
+import { CompanyDialog } from "@/components/forms/company-dialog";
+import { DepartmentDialog } from "@/components/forms/department-dialog";
 
 export default async function SettingsPage() {
     const companies = await getCompanies();
@@ -35,7 +35,7 @@ export default async function SettingsPage() {
                                 <Building2 className="h-5 w-5" />
                                 <h2 className="font-semibold">Companies</h2>
                             </div>
-                            <AddCompanyDialog />
+                            <CompanyDialog />
                         </div>
                         <div className="p-6">
                             {companies.length === 0 ? (
@@ -68,7 +68,7 @@ export default async function SettingsPage() {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <Button variant="ghost" size="sm">Edit</Button>
+                                            <CompanyDialog company={company} />
                                         </div>
                                     ))}
                                 </div>
@@ -83,7 +83,7 @@ export default async function SettingsPage() {
                                 <Users className="h-5 w-5" />
                                 <h2 className="font-semibold">Departments</h2>
                             </div>
-                            <AddDepartmentDialog companies={companies} />
+                            <DepartmentDialog companies={companies} />
                         </div>
                         <div className="p-6">
                             {departments.length === 0 ? (
@@ -107,7 +107,7 @@ export default async function SettingsPage() {
                                                     )}
                                                 </div>
                                             </div>
-                                            <Button variant="ghost" size="sm">Edit</Button>
+                                            <DepartmentDialog companies={companies} department={department} />
                                         </div>
                                     ))}
                                 </div>
